@@ -1,0 +1,32 @@
+{
+  "name": "postcss-extract-value",
+  "version": "0.1.0",
+  "description": "PostCSS plugin to extract values from css properties and put them into variables.",
+  "keywords": [
+    "postcss",
+    "css",
+    "postcss-plugin",
+    "variable"
+  ],
+  "author": "lutien <lutien02@gmail.com>",
+  "license": "MIT",
+  "repository": "lutien/postcss-extract-value",
+  "bugs": {
+    "url": "https://github.com/lutien/postcss-extract-value/issues"
+  },
+  "homepage": "https://github.com/lutien/postcss-extract-value",
+  "dependencies": {
+    "postcss": "^5.0.21"
+  },
+  "devDependencies": {
+    "ava": "^0.14.0",
+    "eslint": "^2.10.0",
+    "eslint-config-postcss": "^2.0.2"
+  },
+  "scripts": {
+    "test": "ava && eslint *.js"
+  },
+  "eslintConfig": {
+    "extends": "eslint-config-postcss/es5"
+  }
+}
