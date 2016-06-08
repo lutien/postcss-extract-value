@@ -5,6 +5,7 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
 
     // Cache RegExp
     var reCheck = /#\w+|rgba?|hsla?/;
+    var reCSSVariable = /var\(-{2}\w{1}[\w+-]*/;
     var reHex = /#(\w{6}|\w{3})/;
     var reRgb = /rgba?\([\d,.\s]+\)/;
     var reHls = /hsla?\(\s?[0-9]{1,3},\s?(([0-9]{1,3})+%,\s?){2}[0-9.]+\s?\)/;
@@ -84,7 +85,7 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
                         for (var value in valueFilteredList) {
                             valueFiltered = valueFilteredList[value];
 
-                            if (valueFiltered.indexOf('var') === -1) {
+                            if (onlyColor || !reCSSVariable.test(valueFiltered)) {
                                 if (storePropsLink.indexOf(valueFiltered) === -1) {
                                     storePropsLink.push(valueFiltered);
                                 }

@@ -32,7 +32,6 @@ test('default settings', t => {
     return run(t, input, output, { });
 });
 
-
 test('repeated values', t => {
     let input = `.foo {
         color: blue;
