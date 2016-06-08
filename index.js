@@ -2,20 +2,24 @@ var postcss = require('postcss');
 
 module.exports = postcss.plugin('postcss-extract-value', function (opts) {
     opts = opts || {};
+
+    // Cache RegExp
+    var reCheck = /#\w+|rgba?|hsla?/;
+    var reHex = /#(\w{3}|\w{6})/;
+    var reRgb = /rgba?\([\d,.\s]+\)/;
+    var reHls = /hsla?\(\s?[0-9]{1,3},\s?(([0-9]{1,3})+%,\s?){2}[0-9.]+\s?\)/;
+    var reExtract = new RegExp(reHex.source + '|' + reRgb.source + '|' +
+        reHls.source);
+
     var filterByProps = opts.filterByProps,
         onlyColor = opts.onlyColor;
 
     function checkColor(value) {
-        return /#\w+|rgb|hsl/.test(value);
+        return reCheck.test(value);
     }
 
     function extractColor(value) {
-        var hex = /#\w+/,
-            rgb = /rgb(a*)\(([0-9]+,*\s*)*((0|1)\.*[0-9]*)\)/,
-            hls = /hsl(a*)\(([0-9]+%*,*\s*)*((0|1)\.*[0-9]*)\)/,
-            regExp = new RegExp(hex.source + '|' + rgb.source +
-                '|' + hls.source),
-            result = regExp.exec(value);
+        var result = reExtract.exec(value);
         return result && result[0] || value;
     }
 
