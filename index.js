@@ -5,12 +5,13 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
 
     // Cache RegExp
     var reCheck = /#\w+|rgba?|hsla?/;
-    var reHex = /#(\w{3}|\w{6})/;
+    var reHex = /#(\w{6}|\w{3})/;
     var reRgb = /rgba?\([\d,.\s]+\)/;
     var reHls = /hsla?\(\s?[0-9]{1,3},\s?(([0-9]{1,3})+%,\s?){2}[0-9.]+\s?\)/;
     var reExtract = new RegExp(reHex.source + '|' + reRgb.source + '|' +
-        reHls.source);
+        reHls.source, 'g');
 
+    // Options
     var filterByProps = opts.filterByProps,
         onlyColor = opts.onlyColor;
 
@@ -19,8 +20,12 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
     }
 
     function extractColor(value) {
-        var result = reExtract.exec(value);
-        return result && result[0] || value;
+        var resultArray = [];
+        var result = [];
+        while ((result = reExtract.exec(value)) !== null) {
+            resultArray.push(result[0]);
+        }
+        return resultArray;
     }
 
     function checkProp(filter, prop) {
@@ -47,6 +52,7 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
             storePropsLink = {},
             checkColorFilter = true,
             checkPropFilter = true,
+            valueFilteredList = [],
             valueFiltered = '',
             rootSel = null;
 
@@ -63,26 +69,34 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
                         filterByProps && checkProp(filterByProps, decl.prop);
 
                     if (checkColorFilter && checkPropFilter) {
+
                         if (!storeProps[decl.prop]) {
                             storeProps[decl.prop] = [];
                         }
                         storePropsLink = storeProps[decl.prop];
 
-                        if (checkColorFilter) {
-                            valueFiltered = extractColor(decl.value);
+                        if (onlyColor) {
+                            valueFilteredList = extractColor(decl.value);
                         } else {
-                            valueFiltered = decl.value;
+                            valueFilteredList = new Array(decl.value);
                         }
-                        if (valueFiltered.indexOf('var') === -1) {
-                            if (storePropsLink.indexOf(valueFiltered) === -1) {
-                                storePropsLink.push(valueFiltered);
+
+                        for (var value in valueFilteredList) {
+                            valueFiltered = valueFilteredList[value];
+
+                            if (valueFiltered.indexOf('var') === -1) {
+                                if (storePropsLink.indexOf(valueFiltered) === -1) {
+                                    storePropsLink.push(valueFiltered);
+                                }
+
+                                extractValue(decl, storePropsLink, valueFiltered);
                             }
-                            extractValue(decl, storePropsLink, valueFiltered);
                         }
                     }
                 });
             }
         });
+
         if (!rootSel) {
             rootSel = postcss.rule({ selector: ':root' });
             root.prepend(rootSel);

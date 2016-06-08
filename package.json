@@ -27,6 +27,9 @@
     "test": "ava && eslint *.js"
   },
   "eslintConfig": {
-    "extends": "eslint-config-postcss/es5"
+    "extends": "eslint-config-postcss/es5",
+    "rules": {
+      "max-len": [1, 80]
+    }
   }
 }

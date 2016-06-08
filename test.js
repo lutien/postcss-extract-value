@@ -88,3 +88,14 @@ test('exist root element', t => {
     return run(t, input, output, { });
 });
 
+test('several colors in one property', t => {
+    let input = `.foo {
+        box-shadow: inset 0 2px 0px #dcffa6, 0 2px 5px #000;
+    }`;
+    let output = `:root {
+        --box-shadow-1: #dcffa6;
+        --box-shadow-2: #000;\n}\n.foo {
+        box-shadow: inset 0 2px 0px var(--box-shadow-1), 0 2px 5px var(--box-shadow-2);
+    }`;
+    return run(t, input, output, { onlyColor: true });
+});
