@@ -14,6 +14,7 @@
 }
 .bar {
      color: #000;
+     margin: 15px;
 }
 ```
 
@@ -22,6 +23,7 @@
     --width-1: 100px;
     --color-1: #000;
     --margin-1: 10px;
+    --margin-2: 15px;
 }
 .foo {
     width: var(--width-1);
@@ -30,6 +32,7 @@
 }
 .bar {
     color: var(--color-1);
+    margin: var(--margin-2);
 }
 ```
 
