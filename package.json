@@ -29,7 +29,10 @@
   "eslintConfig": {
     "extends": "eslint-config-postcss/es5",
     "rules": {
-      "max-len": [1, 80]
+      "max-len": [
+        1,
+        80
+      ]
     }
   }
 }
