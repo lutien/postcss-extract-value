@@ -1,12 +1,13 @@
 var postcss = require('postcss'),
-    colorName = Object.keys(require('color-name'));
+    colorNameList = Object.keys(require('color-name'));
 
 module.exports = postcss.plugin('postcss-extract-value', function (opts) {
     opts = opts || {};
 
     // Cache RegExp
-    var reColorKeywords = new RegExp(colorName.join('|'));
-    var reCheck =  new RegExp(/#\w+|rgba?|hsla?/.source + '|' + reColorKeywords.source, 'g');
+    var reColorKeywords = new RegExp(colorNameList.join('|'));
+    var reCheck =  new RegExp(/#\w+|rgba?|hsla?/.source +
+        '|' + reColorKeywords.source, 'g');
     var reCSSVariable = /var\(-{2}\w{1}[\w+-]*/;
     var reHex = /#(\w{6}|\w{3})/;
     var reRgb = /rgba?\([\d,.\s]+\)/;
@@ -17,6 +18,7 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
     // Options
     var filterByProps = opts.filterByProps;
     var onlyColor = opts.onlyColor;
+    var scope = opts.scope || ':root';
 
     function checkColor(value) {
         return reCheck.test(value);
@@ -40,8 +42,8 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
         return '--' + prop + '-' + num;
     }
 
-    function addCSSVariable(root, prop, value, num) {
-        root.append(makeCSSVariable(prop, ++num) + ': ' + value);
+    function addCSSVariable(currentScope, prop, value, num) {
+        currentScope.append(makeCSSVariable(prop, ++num) + ': ' + value);
     }
 
     function extractValue(decl, storePropsLink, valueFiltered) {
@@ -63,7 +65,7 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
 
         css.walkRules(function (rule) {
 
-            if (rule.selector === ':root') {
+            if (rule.selector === scope) {
                 rootSel = rule;
             } else {
                 rule.walkDecls(function (decl) {
@@ -103,7 +105,7 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
         });
 
         if (!rootSel) {
-            rootSel = postcss.rule({ selector: ':root' });
+            rootSel = postcss.rule({ selector: scope });
             root.prepend(rootSel);
         }
         for (var prop in storeProps) {

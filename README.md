@@ -65,5 +65,13 @@ Default: `false`
 
 If you set true, only colors (hex, rgb, hsl, color keywords) will be extracted from values.
 
+### Scope
+
+Type: `string`<br>
+Required: `false`<br>
+Default: `:root`
+
+You can set custom selector, which will contain variables.
+
 
 See [PostCSS] docs for examples for your environment.

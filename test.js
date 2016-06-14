@@ -68,6 +68,17 @@ test('option "onlyColor"', t => {
     return run(t, input, output, { onlyColor: true });
 });
 
+test('color keyword', t => {
+    let input = `.foo {
+        border: 1px solid black;
+    }`;
+    let output = `:root {
+        --border-1: black;\n}\n.foo {
+        border: 1px solid var(--border-1);
+    }`;
+    return run(t, input, output, { onlyColor: true });
+});
+
 test('exist root element', t => {
     let input = `:root {
         --base-font-size: 16px;
@@ -99,13 +110,32 @@ test('several colors in one property', t => {
     return run(t, input, output, { onlyColor: true });
 });
 
-test('color keyword', t => {
+test('custom element for css variables', t => {
     let input = `.foo {
-        border: 1px solid black;
+        --color-1: black;
+    }
+    .bar {
+        border-color: red;
+    }`;
+    let output = `.foo {
+        --color-1: black;
+        --border-color-1: red;
+    }
+    .bar {
+        border-color: var(--border-color-1);
+    }`;
+    return run(t, input, output, { scope: '.foo' });
+});
+
+test('filter by color and props', t => {
+    let input = `.foo {
+        border: 1px solid #000;
+        background-color: red;
     }`;
     let output = `:root {
-        --border-1: black;\n}\n.foo {
+        --border-1: #000;\n}\n.foo {
         border: 1px solid var(--border-1);
+        background-color: red;
     }`;
-    return run(t, input, output, { onlyColor: true });
+    return run(t, input, output, { onlyColor: true, filterByProps: ['border'] });
 });
