@@ -1,6 +1,6 @@
 {
   "name": "postcss-extract-value",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "PostCSS plugin to extract values from css properties and put them into variables.",
   "keywords": [
     "postcss",
@@ -16,7 +16,8 @@
   },
   "homepage": "https://github.com/lutien/postcss-extract-value",
   "dependencies": {
-    "postcss": "^5.0.21"
+    "postcss": "^5.0.21",
+    "color-name": "^1.1.1"
   },
   "devDependencies": {
     "ava": "^0.14.0",

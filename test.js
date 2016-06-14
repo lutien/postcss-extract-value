@@ -98,3 +98,14 @@ test('several colors in one property', t => {
     }`;
     return run(t, input, output, { onlyColor: true });
 });
+
+test('color keyword', t => {
+    let input = `.foo {
+        border: 1px solid black;
+    }`;
+    let output = `:root {
+        --border-1: black;\n}\n.foo {
+        border: 1px solid var(--border-1);
+    }`;
+    return run(t, input, output, { onlyColor: true });
+});

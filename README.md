@@ -63,7 +63,7 @@ Type: `boolean`<br>
 Required: `false`<br>
 Default: `false`
 
-If you set true, only colors (hex, rgb, hsl, color keyword isn`t supported now) will be extracted from values.
+If you set true, only colors (hex, rgb, hsl, color keywords) will be extracted from values.
 
 
 See [PostCSS] docs for examples for your environment.
