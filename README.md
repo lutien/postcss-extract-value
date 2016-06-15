@@ -65,7 +65,7 @@ Default: `false`
 
 If you set true, only colors (hex, rgb, hsl, color keywords) will be extracted from values.
 
-### Scope
+### scope
 
 Type: `string`<br>
 Required: `false`<br>
