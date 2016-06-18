@@ -69,29 +69,31 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
                 rootSel = rule;
             } else {
                 rule.walkDecls(function (decl) {
-                    checkColorFilter = !onlyColor ||
-                        onlyColor && checkColor(decl.value);
+                    if (!reCSSVariable.test(decl.value)) {
 
-                    checkPropFilter = !filterByProps ||
-                        filterByProps && checkProp(filterByProps, decl.prop);
+                        checkColorFilter = !onlyColor ||
+                            onlyColor && checkColor(decl.value);
 
-                    if (checkColorFilter && checkPropFilter) {
+                        checkPropFilter = !filterByProps ||
+                            filterByProps &&
+                            checkProp(filterByProps, decl.prop);
 
-                        if (!storeProps[decl.prop]) {
-                            storeProps[decl.prop] = [];
-                        }
-                        storePropsLink = storeProps[decl.prop];
+                        if (checkColorFilter && checkPropFilter) {
 
-                        if (onlyColor) {
-                            valueFilteredList = extractColor(decl.value);
-                        } else {
-                            valueFilteredList = new Array(decl.value);
-                        }
+                            if (!storeProps[decl.prop]) {
+                                storeProps[decl.prop] = [];
+                            }
+                            storePropsLink = storeProps[decl.prop];
 
-                        for (var value in valueFilteredList) {
-                            valueFiltered = valueFilteredList[value];
+                            if (onlyColor) {
+                                valueFilteredList = extractColor(decl.value);
+                            } else {
+                                valueFilteredList = new Array(decl.value);
+                            }
 
-                            if (onlyColor || !reCSSVariable.test(valueFiltered)) {
+                            for (var value in valueFilteredList) {
+                                valueFiltered = valueFilteredList[value];
+
                                 if (storePropsLink.indexOf(valueFiltered) === -1) {
                                     storePropsLink.push(valueFiltered);
                                 }

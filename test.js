@@ -137,5 +137,27 @@ test('filter by color and props', t => {
         border: 1px solid var(--border-1);
         background-color: red;
     }`;
-    return run(t, input, output, { onlyColor: true, filterByProps: ['border'] });
+    return run(t, input, output, {
+        onlyColor: true,
+        filterByProps: ['border']
+    });
+});
+
+test('default value in css variable', t => {
+    let input = `:root {
+        --base-color: #fff;
+    }
+    .foo {
+        color: var(--base-color, #000);
+        border: 1px solid #eee;
+    }`;
+    let output = `:root {
+        --base-color: #fff;
+        --border-1: #eee;
+    }
+    .foo {
+        color: var(--base-color, #000);
+        border: 1px solid var(--border-1);
+    }`;
+    return run(t, input, output, { onlyColor: true });
 });
