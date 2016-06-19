@@ -1,5 +1,8 @@
+## v0.2.1
+
+* Fix case with default value in css variable
+
 ## v0.2.0
-#### Added
 
 * Add support several colors in one property
 * Fix regexp for different color types
