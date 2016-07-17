@@ -161,3 +161,22 @@ test('default value in css variable', t => {
     }`;
     return run(t, input, output, { onlyColor: true });
 });
+
+test('variable with several color values', t => {
+    let input = `:root {
+        --base-color: #fff;
+    }
+    .foo {
+        border: 1px solid var(--base-color),
+        2px solid #000;
+    }`;
+    let output = `:root {
+        --base-color: #fff;
+        --border-1: #000;
+    }
+    .foo {
+        border: 1px solid var(--base-color),
+        2px solid var(--border-1);
+    }`;
+    return run(t, input, output, { onlyColor: true });
+});
