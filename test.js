@@ -50,7 +50,7 @@ test('repeated values', t => {
     return run(t, input, output, optDefault);
 });
 
-/***************Color types*************************/
+/** *************Color types*********************** **/
 test('HSL', t => {
     let input = `.foo {
         border: 1px solid hsl(120,100%,50%, 0.5);
@@ -128,7 +128,7 @@ test('long hex', t => {
     return run(t, input, output, { onlyColor: true });
 });
 
-/******************************************************/
+/** ************************************************** **/
 
 test('exist root element', t => {
     let input = `:root {
