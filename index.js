@@ -11,9 +11,9 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
     var reCSSVariable = /^var\(-{2}\w{1}[\w+-]*/;
     var reHex = /#(\w{6}|\w{3})/;
     var reRgb = /rgba?\([\d,.\s]+\)/;
-    var reHls = /hsla?\(\s?[0-9]{1,3},\s?(([0-9]{1,3})+%,\s?){2}[0-9.]+\s?\)/;
+    var reHsl = /hsla?\(\s?[0-9]{1,3},\s?(([0-9]{1,3})+%,\s?){2}[0-9.]+\s?\)/;
     var reExtract = new RegExp(reHex.source + '|' + reRgb.source + '|' +
-        reHls.source + '|' + reColorKeywords.source, 'g');
+        reHsl.source + '|' + reColorKeywords.source, 'g');
 
     // Options
     var filterByProps = opts.filterByProps;

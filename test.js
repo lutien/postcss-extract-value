@@ -50,20 +50,25 @@ test('repeated values', t => {
     return run(t, input, output, optDefault);
 });
 
-test('option "onlyColor"', t => {
+/** *************Color types*********************** **/
+test('HSL', t => {
     let input = `.foo {
-        color: #000;
-        border: 1px solid hsla(120,100%,50%, 0.5);
-        width: 10px;
-        display: block;
+        border: 1px solid hsl(120,100%,50%, 0.5);
     }`;
     let output = `:root {
-        --color-1: #000;
-        --border-1: hsla(120,100%,50%, 0.5);\n}\n.foo {
-        color: var(--color-1);
+        --border-1: hsl(120,100%,50%, 0.5);\n}\n.foo {
         border: 1px solid var(--border-1);
-        width: 10px;
-        display: block;
+    }`;
+    return run(t, input, output, { onlyColor: true });
+});
+
+test('HSLA', t => {
+    let input = `.foo {
+        border: 1px solid hsla(120,100%,50%, 0.5);
+    }`;
+    let output = `:root {
+        --border-1: hsla(120,100%,50%, 0.5);\n}\n.foo {
+        border: 1px solid var(--border-1);
     }`;
     return run(t, input, output, { onlyColor: true });
 });
@@ -78,6 +83,52 @@ test('color keyword', t => {
     }`;
     return run(t, input, output, { onlyColor: true });
 });
+
+test('RGB', t => {
+    let input = `.foo {
+        border: 1px solid rgb(120, 100, 50);
+    }`;
+    let output = `:root {
+        --border-1: rgb(120, 100, 50);\n}\n.foo {
+        border: 1px solid var(--border-1);
+    }`;
+    return run(t, input, output, { onlyColor: true });
+});
+
+test('RGBA', t => {
+    let input = `.foo {
+        border: 1px solid rgba(120, 100, 50, 0.4);
+    }`;
+    let output = `:root {
+        --border-1: rgba(120, 100, 50, 0.4);\n}\n.foo {
+        border: 1px solid var(--border-1);
+    }`;
+    return run(t, input, output, { onlyColor: true });
+});
+
+test('short hex', t => {
+    let input = `.foo {
+        border: 1px solid #000;
+    }`;
+    let output = `:root {
+        --border-1: #000;\n}\n.foo {
+        border: 1px solid var(--border-1);
+    }`;
+    return run(t, input, output, { onlyColor: true });
+});
+
+test('long hex', t => {
+    let input = `.foo {
+        border: 1px solid #101113;
+    }`;
+    let output = `:root {
+        --border-1: #101113;\n}\n.foo {
+        border: 1px solid var(--border-1);
+    }`;
+    return run(t, input, output, { onlyColor: true });
+});
+
+/** ************************************************** **/
 
 test('exist root element', t => {
     let input = `:root {
