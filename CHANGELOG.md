@@ -1,3 +1,8 @@
+## v0.2.2
+
+* Fix hsl regexp
+* Add tests for color types
+
 ## v0.2.1
 
 * Fix case with default value in css variable
