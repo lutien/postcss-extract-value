@@ -73,5 +73,79 @@ Default: `:root`
 
 You can set custom selector, which will contain variables.
 
+### templateVariableName
+
+Type: `string`<br>
+Required: `false`<br>
+Default: ``
+
+You can set template for variables using special words.
+See more information below.
+
+
+## Usage templateVariableName
+
+**With options _filterByProps_ or without any options by default:**
+
+### [propertyName]
+Name of css property (width, border, etc.).
+
+```js
+postcss([
+    postcssExtractValue({
+        templateVariableName: 'theme-[propertyName]'
+    }),
+])
+```
+```css
+.foo {
+     width: 100px;
+}
+```
+
+```css
+:root {
+    --theme-width-1: 100px;
+}
+.foo {
+    width: var(--theme-width-1);
+}
+```
+
+**With options _onlyColor_:**
+
+### [colorKeyword]
+Color keyword of the nearest color.
+
+### [tint]
+Deviation in the dark or light side from the nearest color. (light\dark)
+
+ ```js
+ postcss([
+     postcssExtractValue({
+          templateVariableName: 'theme[tint][colorKeyword]',
+     }),
+ ])
+ ```
+ ```css
+ .foo {
+     border: 2px solid #cc0000;
+     color: #ff0000;
+     background-color: rgb(255, 26, 26);
+ }
+ ```
+
+ ```css
+:root {
+    --theme-dark-red-1: #cc0000;
+    --theme-red-1: #ff0000;
+    --theme-light-red-1: rgb(255, 26, 26);
+}
+.foo {
+    border: 2px solid var(--theme-dark-red-1);
+    color: var(--theme-red-1);
+    background-color: var(--theme-light-red-1);
+}
+ ```
 
 See [PostCSS] docs for examples for your environment.
