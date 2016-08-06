@@ -53,10 +53,10 @@ test('repeated values', t => {
 /** *************Color types*********************** **/
 test('HSL', t => {
     let input = `.foo {
-        border: 1px solid hsl(120,100%,50%, 0.5);
+        border: 1px solid hsl(120, 100%, 50%);
     }`;
     let output = `:root {
-        --border-1: hsl(120,100%,50%, 0.5);\n}\n.foo {
+        --border-1: hsl(120, 100%, 50%);\n}\n.foo {
         border: 1px solid var(--border-1);
     }`;
     return run(t, input, output, { onlyColor: true });
@@ -64,10 +64,10 @@ test('HSL', t => {
 
 test('HSLA', t => {
     let input = `.foo {
-        border: 1px solid hsla(120,100%,50%, 0.5);
+        border: 1px solid hsla(120, 100%, 50%, 0.5);
     }`;
     let output = `:root {
-        --border-1: hsla(120,100%,50%, 0.5);\n}\n.foo {
+        --border-1: hsla(120, 100%, 50%, 0.5);\n}\n.foo {
         border: 1px solid var(--border-1);
     }`;
     return run(t, input, output, { onlyColor: true });
@@ -230,4 +230,79 @@ test('variable with several color values', t => {
         2px solid var(--border-1);
     }`;
     return run(t, input, output, { onlyColor: true });
+});
+
+test('variable template', t => {
+    let input = `.foo {
+        border: 2px solid #000;
+    }`;
+    let output = `:root {
+        --theme-black-1: #000;\n}\n.foo {
+        border: 2px solid var(--theme-black-1);
+    }`;
+    return run(t, input, output, { onlyColor: true, templateVariableName: 'theme[colorKeyword]' });
+});
+
+test('variable template with two black colors', t => {
+    let input = `.foo {
+        border: 2px solid #000;
+        color: #020202;
+    }`;
+    let output = `:root {
+        --theme-black-1: #000;
+        --theme-black-2: #020202;\n}\n.foo {
+        border: 2px solid var(--theme-black-1);
+        color: var(--theme-black-2);
+    }`;
+    return run(t, input, output, { onlyColor: true, templateVariableName: 'theme[colorKeyword]' });
+});
+
+test('variable template with tint', t => {
+    let input = `.foo {
+        border: 2px solid #000;
+        color: #020202;
+        background-color: #0d0d0d;
+    }`;
+    let output = `:root {
+        --black-1: #000;
+        --black-light-1: #020202;
+        --black-light-2: #0d0d0d;\n}\n.foo {
+        border: 2px solid var(--black-1);
+        color: var(--black-light-1);
+        background-color: var(--black-light-2);
+    }`;
+    return run(t, input, output, { onlyColor: true, templateVariableName: '[colorKeyword][tint]' });
+});
+
+test('variable template with tint in the beginning', t => {
+    let input = `.foo {
+        border: 2px solid #000;
+        color: #020202;
+        background-color: #0d0d0d;
+    }`;
+    let output = `:root {
+        --black-1: #000;
+        --light-black-1: #020202;
+        --light-black-2: #0d0d0d;\n}\n.foo {
+        border: 2px solid var(--black-1);
+        color: var(--light-black-1);
+        background-color: var(--light-black-2);
+    }`;
+    return run(t, input, output, { onlyColor: true, templateVariableName: '[tint][colorKeyword]' });
+});
+
+test('template with propertyName', t => {
+    let input = `.foo {
+        border: 1px solid #000;
+        background-color: red;
+    }`;
+    let output = `:root {
+        --theme-border-1: 1px solid #000;
+        --theme-background-color-1: red;\n}\n.foo {
+        border: var(--theme-border-1);
+        background-color: var(--theme-background-color-1);
+    }`;
+    return run(t, input, output, {
+        templateVariableName: 'theme-[propertyName]'
+    });
 });

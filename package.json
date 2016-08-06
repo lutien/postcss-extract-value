@@ -16,8 +16,10 @@
   },
   "homepage": "https://github.com/lutien/postcss-extract-value",
   "dependencies": {
-    "postcss": "^5.0.21",
-    "color-name": "^1.1.1"
+    "color-name": "^1.1.1",
+    "nearest-color": "^0.4.0",
+    "parse-color": "^1.0.0",
+    "postcss": "^5.0.21"
   },
   "devDependencies": {
     "ava": "^0.14.0",

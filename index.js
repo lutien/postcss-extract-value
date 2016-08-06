@@ -1,26 +1,45 @@
 var postcss = require('postcss'),
-    colorNameList = Object.keys(require('color-name'));
+    colorObject = require('color-name'),
+    parserColor = require('parse-color'),
+    nearestColor = require('nearest-color');
 
 module.exports = postcss.plugin('postcss-extract-value', function (opts) {
     opts = opts || {};
 
+    var colorNameList = Object.keys(colorObject);
+
     // Cache RegExp
     var reColorKeywords = new RegExp(colorNameList.join('|'));
-    var reCheck =  new RegExp(/#\w+|rgba?|hsla?/.source +
-        '|' + reColorKeywords.source, 'g');
     var reCSSVariable = /^var\(-{2}\w{1}[\w+-]*/;
+
     var reHex = /#(\w{6}|\w{3})/;
     var reRgb = /rgba?\([\d,.\s]+\)/;
-    var reHsl = /hsla?\(\s?[0-9]{1,3},\s?(([0-9]{1,3})+%,\s?){2}[0-9.]+\s?\)/;
+    var reHsl = /hsla?\(\s?[0-9]{1,3},\s?([0-9]{1,3}%,?\s?){2}([0-9.]+)?\)/;
+
     var reExtract = new RegExp(reHex.source + '|' + reRgb.source + '|' +
         reHsl.source + '|' + reColorKeywords.source, 'g');
 
-    // Options
-    var filterByProps = opts.filterByProps;
-    var onlyColor = opts.onlyColor;
-    var scope = opts.scope || ':root';
 
-    function checkColor(value) {
+    // Options
+    var filterByProps = opts.filterByProps,
+        onlyColor = opts.onlyColor,
+        scope = opts.scope || ':root',
+        templateVariableName = opts.templateVariableName || '';
+
+    var colorList = {};
+    colorNameList.forEach(function (key) {
+        colorList[key] = {
+            r: colorObject[key][0],
+            g: colorObject[key][1],
+            b: colorObject[key][2]
+        };
+    });
+    var findColor = nearestColor.from(colorList);
+    var variablesListCounter = {};
+
+    function isColor(value) {
+        var reCheck =  new RegExp(/#\w+|rgba?|hsla?/.source +
+            '|' + reColorKeywords.source, 'g');
         return reCheck.test(value);
     }
 
@@ -38,30 +57,88 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
         return filter.indexOf(prop) > -1;
     }
 
-    function makeCSSVariable(prop, num) {
-        return '--' + prop + '-' + num;
+    function colorNameVariable(value) {
+        var variable = {},
+            nearestColorValue = {},
+            parsedColor = parserColor(value);
+
+        if (parsedColor.hex) {
+            nearestColorValue = parserColor(findColor(parsedColor.hex).value);
+        }
+        if (nearestColorValue) {
+            variable.colorKeyword = nearestColorValue.keyword;
+
+            if (templateVariableName.indexOf('[tint]') > -1) {
+                if (nearestColorValue.hsl[2] > parsedColor.hsl[2]) variable.tint = 'dark';
+                else if (nearestColorValue.hsl[2] < parsedColor.hsl[2]) variable.tint = 'light';
+                else {
+                    variable.tint = '';
+
+                }
+                if (variable.tint) {
+                    if (templateVariableName.indexOf('[tint]') > 0) {
+                        variable.tint = '-' + variable.tint;
+                    }
+                }
+            }
+            if (templateVariableName.indexOf('[colorKeyword]') > 0 &&
+                !(templateVariableName.indexOf('[tint]') === 0 && !variable.tint)) {
+                variable.colorKeyword = '-' + variable.colorKeyword;
+            }
+        }
+
+        return variable;
     }
 
-    function addCSSVariable(currentScope, prop, value, num) {
-        currentScope.append(makeCSSVariable(prop, ++num) + ': ' + value);
+    function makeNameByTemplate(value, prop) {
+        var nameVariables = [],
+            result = templateVariableName;
+        if (onlyColor) {
+            nameVariables = colorNameVariable(value);
+        } else if (templateVariableName.indexOf('[propertyName]')) {
+            nameVariables.propertyName =
+                result = templateVariableName.replace('[propertyName]', prop);
+        }
+        for (var key in nameVariables) {
+            result = result.replace('[' + key + ']', nameVariables[key]);
+        }
+        return result;
     }
 
-    function extractValue(decl, storePropsLink, valueFiltered) {
-        var positionValue = storePropsLink.indexOf(valueFiltered) + 1;
-        var variable = 'var(' + makeCSSVariable(decl.prop, positionValue) + ')';
+    function makeCSSVariable(prop, num, value) {
+        var variableName = '',
+            result = '';
+        if (templateVariableName) {
+            variableName = makeNameByTemplate(value, prop);
+            result = variableName;
+            if (!variablesListCounter[variableName]) {
+                variablesListCounter[variableName] = 1;
+            }
+            result += '-' + variablesListCounter[variableName];
+            variablesListCounter[variableName]++;
+        } else {
+            variableName = prop + '-' + num;
+            result = variableName;
+        }
 
-        return decl.value.replace(valueFiltered, variable);
+        return '--' + result;
+    }
+
+    function addCSSVariable(currentScope, value, variableName) {
+        currentScope.append(variableName + ': ' + value);
     }
 
     return function (css) {
-        var root = css.root();
-        var storeProps = {};
-        var storePropsLink = {};
-        var checkColorFilter = true;
-        var checkPropFilter = true;
-        var valueFilteredList = [];
-        var valueFiltered = '';
-        var rootSel = null;
+        var root = css.root(),
+            rootSel,
+            storeProps = {},
+            checkColorFilter = true,
+            checkPropFilter = true,
+            filteredValueList = [],
+            filteredValue = '',
+            variableName = '',
+            variablesList = {},
+            positionValue = 0;
 
         css.walkRules(function (rule) {
 
@@ -72,7 +149,7 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
                     if (!reCSSVariable.test(decl.value)) {
 
                         checkColorFilter = !onlyColor ||
-                            onlyColor && checkColor(decl.value);
+                            onlyColor && isColor(decl.value);
 
                         checkPropFilter = !filterByProps ||
                             filterByProps &&
@@ -83,22 +160,29 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
                             if (!storeProps[decl.prop]) {
                                 storeProps[decl.prop] = [];
                             }
-                            storePropsLink = storeProps[decl.prop];
 
                             if (onlyColor) {
-                                valueFilteredList = extractColor(decl.value);
+                                filteredValueList = extractColor(decl.value);
                             } else {
-                                valueFilteredList = new Array(decl.value);
+                                filteredValueList = new Array(decl.value);
                             }
 
-                            for (var value in valueFilteredList) {
-                                valueFiltered = valueFilteredList[value];
+                            for (var value in filteredValueList) {
+                                filteredValue = filteredValueList[value];
 
-                                if (storePropsLink.indexOf(valueFiltered) === -1) {
-                                    storePropsLink.push(valueFiltered);
+                                positionValue = storeProps[decl.prop].indexOf(filteredValue);
+                                if (positionValue === -1) {
+                                    storeProps[decl.prop].push(filteredValue);
+                                }
+                                if (variablesList.hasOwnProperty(filteredValue)) {
+                                    variableName = variablesList[filteredValue];
+                                } else {
+                                    positionValue = storeProps[decl.prop].indexOf(filteredValue);
+                                    variableName = makeCSSVariable(decl.prop, ++positionValue, filteredValue);
+                                    variablesList[filteredValue] = variableName;
                                 }
 
-                                decl.value = extractValue(decl, storePropsLink, valueFiltered);
+                                decl.value = decl.value.replace(filteredValue, 'var(' + variableName + ')');
                             }
                         }
                     }
@@ -110,8 +194,8 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
             rootSel = postcss.rule({ selector: scope });
             root.prepend(rootSel);
         }
-        for (var prop in storeProps) {
-            storeProps[prop].forEach(addCSSVariable.bind(this, rootSel, prop));
+        for (var value in variablesList) {
+            addCSSVariable(rootSel, value, variablesList[value]);
         }
     };
 });
