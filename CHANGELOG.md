@@ -1,3 +1,7 @@
+## v0.3.0
+
+* Add templating for variables :art:
+
 ## v0.2.2
 
 * Fix hsl regexp
