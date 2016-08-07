@@ -65,6 +65,7 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
         if (parsedColor.hex) {
             nearestColorValue = parserColor(findColor(parsedColor.hex).value);
         }
+
         if (nearestColorValue) {
             variable.colorKeyword = nearestColorValue.keyword;
 
@@ -73,8 +74,8 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
                 else if (nearestColorValue.hsl[2] < parsedColor.hsl[2]) variable.tint = 'light';
                 else {
                     variable.tint = '';
-
                 }
+
                 if (variable.tint) {
                     if (templateVariableName.indexOf('[tint]') > 0) {
                         variable.tint = '-' + variable.tint;
@@ -93,11 +94,11 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
     function makeNameByTemplate(value, prop) {
         var nameVariables = [],
             result = templateVariableName;
+
         if (onlyColor) {
             nameVariables = colorNameVariable(value);
         } else if (templateVariableName.indexOf('[propertyName]')) {
-            nameVariables.propertyName =
-                result = templateVariableName.replace('[propertyName]', prop);
+            nameVariables.propertyName = prop;
         }
         for (var key in nameVariables) {
             result = result.replace('[' + key + ']', nameVariables[key]);
@@ -108,12 +109,15 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
     function makeCSSVariable(prop, num, value) {
         var variableName = '',
             result = '';
+
         if (templateVariableName) {
             variableName = makeNameByTemplate(value, prop);
             result = variableName;
+
             if (!variablesListCounter[variableName]) {
                 variablesListCounter[variableName] = 1;
             }
+
             result += '-' + variablesListCounter[variableName];
             variablesListCounter[variableName]++;
         } else {
@@ -171,6 +175,7 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
                                 filteredValue = filteredValueList[value];
 
                                 positionValue = storeProps[decl.prop].indexOf(filteredValue);
+
                                 if (positionValue === -1) {
                                     storeProps[decl.prop].push(filteredValue);
                                 }
