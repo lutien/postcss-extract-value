@@ -70,9 +70,11 @@ module.exports = postcss.plugin('postcss-extract-value', function (opts) {
             variable.colorKeyword = nearestColorValue.keyword;
 
             if (templateVariableName.indexOf('[tint]') > -1) {
-                if (nearestColorValue.hsl[2] > parsedColor.hsl[2]) variable.tint = 'dark';
-                else if (nearestColorValue.hsl[2] < parsedColor.hsl[2]) variable.tint = 'light';
-                else {
+                if (nearestColorValue.hsl[2] > parsedColor.hsl[2]) {
+                    variable.tint = 'dark';
+                } else if (nearestColorValue.hsl[2] < parsedColor.hsl[2]) {
+                    variable.tint = 'light';
+                } else {
                     variable.tint = '';
                 }
 
