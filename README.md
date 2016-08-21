@@ -1,4 +1,4 @@
-# PostCSS Extract Value [![Build Status][ci-img]][ci]
+# PostCSS Extract Value [![Build Status][ci-img]][ci] [![Coverage Status](https://coveralls.io/repos/github/lutien/postcss-extract-value/badge.svg)](https://coveralls.io/github/lutien/postcss-extract-value)
 
 [PostCSS] plugin to extract values from css properties and put them into variables.
 
