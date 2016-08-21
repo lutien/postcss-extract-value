@@ -257,6 +257,23 @@ test('variable template with two black colors', t => {
     return run(t, input, output, { onlyColor: true, templateVariableName: 'theme[colorKeyword]' });
 });
 
+test('variable template with light and dark color', t => {
+    let input = `.foo {
+        border: 2px solid #cc0000;
+        color: #ff0000;
+        background-color: rgb(255, 26, 26);
+    }`;
+    let output = `:root {
+        --theme-dark-red-1: #cc0000;
+        --theme-red-1: #ff0000;
+        --theme-light-red-1: rgb(255, 26, 26);\n}\n.foo {
+        border: 2px solid var(--theme-dark-red-1);
+        color: var(--theme-red-1);
+        background-color: var(--theme-light-red-1);
+    }`;
+    return run(t, input, output, { onlyColor: true, templateVariableName: 'theme[tint][colorKeyword]' });
+});
+
 test('variable template with tint', t => {
     let input = `.foo {
         border: 2px solid #000;
