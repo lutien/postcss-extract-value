@@ -6,8 +6,9 @@ const parserColor = require('parse-color');
 const nearestColor = require('nearest-color');
 
 const colorList = {};
+const colorNameList = Object.keys(colorObject);
 
-Object.keys(colorObject).forEach((key) => {
+colorNameList.forEach((key) => {
     colorList[key] = {
         r: colorObject[key][0],
         g: colorObject[key][1],
