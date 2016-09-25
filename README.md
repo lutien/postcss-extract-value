@@ -73,6 +73,14 @@ Default: `:root`
 
 You can set custom selector, which will contain variables.
 
+### variableSyntax
+
+Type: `string`<br>
+Required: `false`<br>
+Default: ``
+
+By default it will be used css variables syntax, other available variants **less** and **sass**.
+
 ### templateVariableName
 
 Type: `string`<br>

@@ -1,3 +1,7 @@
+## v0.4.0
+
+* Add support less and sass syntax for variables
+
 ## v0.3.0
 
 * Add templating for variables :art:
