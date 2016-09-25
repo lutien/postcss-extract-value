@@ -22,10 +22,11 @@
     "postcss": "^5.0.21"
   },
   "devDependencies": {
-    "ava": "^0.14.0",
+    "ava": "^0.16.0",
     "coveralls": "^2.11.12",
-    "eslint": "^2.10.0",
-    "eslint-config-postcss": "^2.0.2",
+    "eslint": "^3.6.0",
+    "eslint-config-airbnb-base": "^7.2.0",
+    "eslint-plugin-import": "^1.16.0",
     "nyc": "^8.1.0"
   },
   "scripts": {
@@ -34,12 +35,14 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "eslintConfig": {
-    "extends": "eslint-config-postcss/es5",
+    "extends": "airbnb-base",
     "rules": {
-      "max-len": [
-        1,
-        80
-      ]
+      "indent": ["error", 4],
+      "import/no-extraneous-dependencies": ["off"],
+      "strict": ["off"],
+      "no-mixed-operators": ["off"],
+      "max-len": ["warn", 100],
+      "no-param-reassign": ["off"]
     }
   }
 }
