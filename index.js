@@ -17,6 +17,31 @@ colorNameList.forEach((key) => {
 });
 const findColor = nearestColor.from(colorList);
 
+function templateParser(template) {
+    const arrLetters = template.split('');
+    const templateMap = new Map();
+    let str = '';
+    arrLetters.forEach((letter) => {
+        if (letter === '[') {
+            if (str) {
+                templateMap.set(str, str);
+            }
+            str = letter;
+        } else if (letter === ']') {
+            str += letter;
+            templateMap.set(str, str);
+            str = '';
+        } else {
+            str += letter;
+        }
+    });
+    if (str) {
+        templateMap.set(str, str);
+    }
+    templateMap.set('[number]', '[number]');
+    return templateMap;
+}
+
 function checkProp(filter, prop) {
     return filter.indexOf(prop) > -1;
 }
@@ -37,8 +62,7 @@ function extractColor(reExtract, value) {
     return resultArray;
 }
 
-function colorNameVariable(templateVariableName, value) {
-    const variable = {};
+function colorNameVariable(result, value) {
     let nearestColorValue = {};
     const parsedColor = parserColor(value);
 
@@ -47,45 +71,32 @@ function colorNameVariable(templateVariableName, value) {
     }
 
     if (nearestColorValue) {
-        variable.colorKeyword = nearestColorValue.keyword;
-
-        if (templateVariableName.indexOf('[tint]') > -1) {
-            if (nearestColorValue.hsl[2] > parsedColor.hsl[2]) {
-                variable.tint = 'dark';
-            } else if (nearestColorValue.hsl[2] < parsedColor.hsl[2]) {
-                variable.tint = 'light';
-            } else {
-                variable.tint = '';
-            }
-
-            if (variable.tint) {
-                if (templateVariableName.indexOf('[tint]') > 0) {
-                    variable.tint = `-${variable.tint}`;
-                }
-            }
+        if (result.has('[colorKeyword]')) {
+            result.set('[colorKeyword]', nearestColorValue.keyword);
         }
-        if (templateVariableName.indexOf('[colorKeyword]') > 0 &&
-            !(templateVariableName.indexOf('[tint]') === 0 &&
-            !variable.tint)) {
-            variable.colorKeyword = `-${variable.colorKeyword}`;
+
+        if (result.has('[tint]')) {
+            if (nearestColorValue.hsl[2] > parsedColor.hsl[2]) {
+                result.set('[tint]', 'dark');
+            } else if (nearestColorValue.hsl[2] < parsedColor.hsl[2]) {
+                result.set('[tint]', 'light');
+            } else {
+                result.delete('[tint]');
+            }
         }
     }
 
-    return variable;
+    return result;
 }
 
-function makeNameByTemplate(templateVariableName, onlyColor, value, prop) {
-    let nameVariables = [];
-    let result = templateVariableName;
+function makeNameByTemplate(templateMap, onlyColor, value, prop) {
+    let result = new Map(templateMap);
 
     if (onlyColor) {
-        nameVariables = colorNameVariable(templateVariableName, value);
-    } else if (templateVariableName.indexOf('[propertyName]')) {
-        nameVariables.propertyName = prop;
+        result = colorNameVariable(result, value);
+    } else if (templateMap.has('[propertyName]')) {
+        result.set('[propertyName]', prop);
     }
-    Object.keys(nameVariables).forEach((key) => {
-        result = result.replace(`[${key}]`, nameVariables[key]);
-    });
     return result;
 }
 
@@ -94,20 +105,20 @@ function addVariablePrefix(variablePrefix, variableSyntax, variable) {
     return `${prefix || variablePrefix.default}${variable}`;
 }
 
-function makeCSSVariable(templateVariableName, variablePrefix, variableSyntax, onlyColor,
+function makeCSSVariable(templateMap, variablePrefix, variableSyntax, onlyColor,
                          variablesListCounter, prop, num, value) {
     let variableName = '';
-    let result = '';
-
-    if (templateVariableName) {
-        variableName = makeNameByTemplate(templateVariableName, onlyColor, value, prop);
-        result = variableName;
+    let result = new Map(templateMap);
+    if (templateMap.size > 1) {
+        result = makeNameByTemplate(templateMap, onlyColor, value, prop);
+        variableName = Array.from(result.values()).join('-');
 
         if (!variablesListCounter[variableName]) {
             variablesListCounter[variableName] = 1;
         }
+        result.set('[number]', `${variablesListCounter[variableName]}`);
+        result = Array.from(result.values()).join('-');
 
-        result += `-${variablesListCounter[variableName]}`;
         variablesListCounter[variableName] += 1;
     } else {
         variableName = `${prop}-${num}`;
@@ -140,6 +151,7 @@ module.exports = postcss.plugin('postcss-extract-value', (opts) => {
     const scope = params.scope || ':root';
     const templateVariableName = params.templateVariableName || '';
     const variableSyntax = params.variableSyntax || '';
+    const templateMap = templateParser(templateVariableName);
 
 
     const variablePrefix = {
@@ -206,7 +218,7 @@ module.exports = postcss.plugin('postcss-extract-value', (opts) => {
                                     variableName = variablesList[filteredValue];
                                 } else {
                                     positionValue = storeProps[decl.prop].indexOf(filteredValue) + 1;
-                                    variableName = makeCSSVariable(templateVariableName, variablePrefix,
+                                    variableName = makeCSSVariable(templateMap, variablePrefix,
                                         variableSyntax, onlyColor, variablesListCounter, decl.prop, positionValue,
                                         filteredValue);
                                     variablesList[filteredValue] = variableName;

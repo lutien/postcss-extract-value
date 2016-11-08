@@ -25,8 +25,8 @@
     "ava": "^0.16.0",
     "coveralls": "^2.11.12",
     "eslint": "^3.6.0",
-    "eslint-config-airbnb-base": "^8.0.0",
-    "eslint-plugin-import": "^1.16.0",
+    "eslint-config-airbnb-base": "^10.0.0",
+    "eslint-plugin-import": "^2.2.0",
     "nyc": "^8.1.0"
   },
   "scripts": {

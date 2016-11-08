@@ -294,21 +294,24 @@ test('variable template with tint', (t) => {
     return run(t, input, output, { onlyColor: true, templateVariableName: '[colorKeyword][tint]' });
 });
 
-test('variable template with tint in the beginning', (t) => {
+test('variable template without special word at the end', (t) => {
     const input = `.foo {
         border: 2px solid #000;
         color: #020202;
         background-color: #0d0d0d;
     }`;
     const output = `:root {
-        --black-1: #000;
-        --light-black-1: #020202;
-        --light-black-2: #0d0d0d;\n}\n.foo {
-        border: 2px solid var(--black-1);
-        color: var(--light-black-1);
-        background-color: var(--light-black-2);
+        --black-new-1: #000;
+        --light-black-new-1: #020202;
+        --light-black-new-2: #0d0d0d;\n}\n.foo {
+        border: 2px solid var(--black-new-1);
+        color: var(--light-black-new-1);
+        background-color: var(--light-black-new-2);
     }`;
-    return run(t, input, output, { onlyColor: true, templateVariableName: '[tint][colorKeyword]' });
+    return run(t, input, output, {
+        onlyColor: true,
+        templateVariableName: '[tint][colorKeyword]new',
+    });
 });
 
 test('template with propertyName', (t) => {
@@ -323,7 +326,7 @@ test('template with propertyName', (t) => {
         background-color: var(--theme-background-color-1);
     }`;
     return run(t, input, output, {
-        templateVariableName: 'theme-[propertyName]',
+        templateVariableName: 'theme[propertyName]',
     });
 });
 
@@ -337,7 +340,7 @@ test('sass variable syntax', (t) => {
         background-color: $theme-background-color-1;
     }`;
     return run(t, input, output, {
-        templateVariableName: 'theme-[propertyName]',
+        templateVariableName: 'theme[propertyName]',
         variableSyntax: 'sass',
     });
 });
@@ -361,7 +364,7 @@ test('less variable syntax', (t) => {
         border: @theme-border-2;
     }`;
     return run(t, input, output, {
-        templateVariableName: 'theme-[propertyName]',
+        templateVariableName: 'theme[propertyName]',
         variableSyntax: 'less',
     });
 });
