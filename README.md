@@ -101,7 +101,7 @@ Name of css property (width, border, etc.).
 ```js
 postcss([
     postcssExtractValue({
-        templateVariableName: 'theme-[propertyName]'
+        templateVariableName: 'theme[propertyName]'
     }),
 ])
 ```

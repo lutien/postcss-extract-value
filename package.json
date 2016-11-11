@@ -29,8 +29,9 @@
     "eslint-plugin-import": "^2.2.0",
     "nyc": "^8.1.0"
   },
+  "main": "./lib/index.js",
   "scripts": {
-    "test": "nyc ava && eslint *.js",
+    "test": "nyc ava test/*.js && eslint *.js",
     "report": "nyc report --reporter=html",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
