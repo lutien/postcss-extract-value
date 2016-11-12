@@ -36,7 +36,7 @@
 }
 ```
 
-## Usage
+## Usage ##
 
 ```js
 import postcssExtractValue from 'postcss-extract-value';
@@ -47,9 +47,9 @@ postcss([
 ])
 ```
 
-## Options
+## Options ##
 
-### filterByProps
+#### filterByProps ####
 
 Type: `array`<br>
 Required: `false`<br>
@@ -57,7 +57,7 @@ Default: `[]`
 
 You can add names of css properties and only from this properties will be extracted values.
 
-### onlyColor
+#### onlyColor ####
 
 Type: `boolean`<br>
 Required: `false`<br>
@@ -65,7 +65,7 @@ Default: `false`
 
 If you set true, only colors (hex, rgb, hsl, color keywords) will be extracted from values.
 
-### scope
+#### scope ####
 
 Type: `string`<br>
 Required: `false`<br>
@@ -73,7 +73,7 @@ Default: `:root`
 
 You can set custom selector, which will contain variables.
 
-### variableSyntax
+#### variableSyntax ####
 
 Type: `string`<br>
 Required: `false`<br>
@@ -81,7 +81,7 @@ Default: ``
 
 By default it will be used css variables syntax, other available variants **less** and **sass**.
 
-### templateVariableName
+#### templateVariableName ####
 
 Type: `string`<br>
 Required: `false`<br>
@@ -91,11 +91,11 @@ You can set template for variables using special words.
 See more information below.
 
 
-## Usage templateVariableName
+## Usage templateVariableName ##
 
-**With options _filterByProps_ or without any options by default:**
+### With options _filterByProps_ or without any options by default: ###
 
-### [propertyName]
+#### [propertyName] ####
 Name of css property (width, border, etc.).
 
 ```js
@@ -120,12 +120,12 @@ postcss([
 }
 ```
 
-**With options _onlyColor_:**
+### With options _onlyColor_: ###
 
-### [colorKeyword]
+#### [colorKeyword] ####
 Color keyword of the nearest color.
 
-### [tint]
+#### [tint] ####
 Deviation in the dark or light side from the nearest color. (light\dark)
 
  ```js
@@ -156,9 +156,9 @@ Deviation in the dark or light side from the nearest color. (light\dark)
 }
  ```
  
- **Others**
- 
- ### [selectorName]
+### Others ###
+
+#### [selectorName] ####
  Name of css selector (className, id, etc.)
  
  ```js
