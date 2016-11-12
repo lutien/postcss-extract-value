@@ -155,5 +155,32 @@ Deviation in the dark or light side from the nearest color. (light\dark)
     background-color: var(--theme-light-red-1);
 }
  ```
+ 
+ **Others**
+ 
+ ### [selectorName]
+ Name of css selector (className, id, etc.)
+ 
+ ```js
+ postcss([
+     postcssExtractValue({
+         templateVariableName: 'theme[selectorName]'
+     }),
+ ])
+ ```
+ ```css
+ .foo {
+      width: 100px;
+ }
+ ```
+ 
+ ```css
+ :root {
+     --theme-foo-1: 100px;
+ }
+ .foo {
+     width: var(--theme-foo-1);
+ }
+ ```
 
 See [PostCSS] docs for examples for your environment.
