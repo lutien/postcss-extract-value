@@ -132,5 +132,3 @@ test('variable template with tint and selector', (t) => {
         templateVariableName: '[selectorName][colorKeyword][tint]',
     });
 });
-
-// TODO: More tests for different kinds of selector

@@ -27,23 +27,38 @@
     "eslint": "^3.6.0",
     "eslint-config-airbnb-base": "^10.0.0",
     "eslint-plugin-import": "^2.2.0",
-    "nyc": "^8.1.0"
+    "nyc": "^8.1.0",
+    "tap-colorize": "^1.2.0"
   },
   "main": "./lib/index.js",
   "scripts": {
-    "test": "nyc ava test/*.js && eslint *.js",
+    "test": "nyc ava --tap | tap-colorize test/*.js && eslint *.js",
     "report": "nyc report --reporter=html",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "eslintConfig": {
     "extends": "airbnb-base",
     "rules": {
-      "indent": ["error", 4],
-      "import/no-extraneous-dependencies": ["off"],
-      "strict": ["off"],
-      "no-mixed-operators": ["off"],
-      "max-len": ["warn", 100],
-      "no-param-reassign": ["off"]
+      "indent": [
+        "error",
+        4
+      ],
+      "import/no-extraneous-dependencies": [
+        "off"
+      ],
+      "strict": [
+        "off"
+      ],
+      "no-mixed-operators": [
+        "off"
+      ],
+      "max-len": [
+        "warn",
+        100
+      ],
+      "no-param-reassign": [
+        "off"
+      ]
     }
   }
 }
