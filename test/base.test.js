@@ -1,11 +1,10 @@
-import test from 'ava';
-import run from './_run';
+const run = require('./_run');
 
 const optDefault = {
     filterByProps: ['color', 'border-color'],
 };
 
-test('default settings', (t) => {
+it('default settings', () => {
     const input = `.foo {
         color: #000;
         width: 10px;
@@ -19,10 +18,10 @@ test('default settings', (t) => {
         width: var(--width-1);
         display: var(--display-1);
     }`;
-    return run(t, input, output, { });
+    return run(input, output, { });
 });
 
-test('repeated values', (t) => {
+it('repeated values', () => {
     const input = `.foo {
         color: blue;
     }
@@ -37,10 +36,10 @@ test('repeated values', (t) => {
     .bar {
         color: var(--color-1);
     }`;
-    return run(t, input, output, optDefault);
+    return run(input, output, optDefault);
 });
 
-test('exist root element', (t) => {
+it('exist root element', () => {
     const input = `:root {
         --base-font-size: 16px;
     }
@@ -56,10 +55,10 @@ test('exist root element', (t) => {
         color: var(--color-1);
         font-size: var(--base-font-size);
     }`;
-    return run(t, input, output, { });
+    return run(input, output, { });
 });
 
-test('several colors in one property', (t) => {
+it('several colors in one property', () => {
     const input = `.foo {
         box-shadow: inset 0 2px 0px #dcffa6, 0 2px 5px #000;
     }`;
@@ -68,10 +67,10 @@ test('several colors in one property', (t) => {
         --box-shadow-2: #000;\n}\n.foo {
         box-shadow: inset 0 2px 0px var(--box-shadow-1), 0 2px 5px var(--box-shadow-2);
     }`;
-    return run(t, input, output, { onlyColor: true });
+    return run(input, output, { onlyColor: true });
 });
 
-test('custom element for css variables', (t) => {
+it('custom element for css variables', () => {
     const input = `.foo {
         --color-1: black;
     }
@@ -85,10 +84,10 @@ test('custom element for css variables', (t) => {
     .bar {
         border-color: var(--border-color-1);
     }`;
-    return run(t, input, output, { scope: '.foo' });
+    return run(input, output, { scope: '.foo' });
 });
 
-test('filter by color and props', (t) => {
+it('filter by color and props', () => {
     const input = `.foo {
         border: 1px solid #000;
         background-color: red;
@@ -98,13 +97,13 @@ test('filter by color and props', (t) => {
         border: 1px solid var(--border-1);
         background-color: red;
     }`;
-    return run(t, input, output, {
+    return run(input, output, {
         onlyColor: true,
         filterByProps: ['border'],
     });
 });
 
-test('default value in css variable', (t) => {
+it('default value in css variable', () => {
     const input = `:root {
         --base-color: #fff;
     }
@@ -120,10 +119,10 @@ test('default value in css variable', (t) => {
         color: var(--base-color, #000);
         border: 1px solid var(--border-1);
     }`;
-    return run(t, input, output, { onlyColor: true });
+    return run(input, output, { onlyColor: true });
 });
 
-test('variable with several color values', (t) => {
+it('variable with several color values', () => {
     const input = `:root {
         --base-color: #fff;
     }
@@ -139,5 +138,5 @@ test('variable with several color values', (t) => {
         border: 1px solid var(--base-color),
         2px solid var(--border-1);
     }`;
-    return run(t, input, output, { onlyColor: true });
+    return run(input, output, { onlyColor: true });
 });

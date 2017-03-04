@@ -1,7 +1,6 @@
-import test from 'ava';
-import run from './_run';
+const run = require('./_run');
 
-test('variable template', (t) => {
+it('variable template', () => {
     const input = `.foo {
         border: 2px solid #000;
     }`;
@@ -9,10 +8,10 @@ test('variable template', (t) => {
         --theme-black-1: #000;\n}\n.foo {
         border: 2px solid var(--theme-black-1);
     }`;
-    return run(t, input, output, { onlyColor: true, templateVariableName: 'theme[colorKeyword]' });
+    return run(input, output, { onlyColor: true, templateVariableName: 'theme[colorKeyword]' });
 });
 
-test('variable template with two black colors', (t) => {
+it('variable template with two black colors', () => {
     const input = `.foo {
         border: 2px solid #000;
         color: #020202;
@@ -23,10 +22,10 @@ test('variable template with two black colors', (t) => {
         border: 2px solid var(--theme-black-1);
         color: var(--theme-black-2);
     }`;
-    return run(t, input, output, { onlyColor: true, templateVariableName: 'theme[colorKeyword]' });
+    return run(input, output, { onlyColor: true, templateVariableName: 'theme[colorKeyword]' });
 });
 
-test('variable template with light and dark color', (t) => {
+it('variable template with light and dark color', () => {
     const input = `.foo {
         border: 2px solid #cc0000;
         color: #ff0000;
@@ -40,13 +39,13 @@ test('variable template with light and dark color', (t) => {
         color: var(--theme-red-1);
         background-color: var(--theme-light-red-1);
     }`;
-    return run(t, input, output, {
+    return run(input, output, {
         onlyColor: true,
         templateVariableName: 'theme[tint][colorKeyword]',
     });
 });
 
-test('variable template with tint', (t) => {
+it('variable template with tint', () => {
     const input = `.foo {
         border: 2px solid #000;
         color: #020202;
@@ -60,10 +59,10 @@ test('variable template with tint', (t) => {
         color: var(--black-light-1);
         background-color: var(--black-light-2);
     }`;
-    return run(t, input, output, { onlyColor: true, templateVariableName: '[colorKeyword][tint]' });
+    return run(input, output, { onlyColor: true, templateVariableName: '[colorKeyword][tint]' });
 });
 
-test('variable template without special word at the end', (t) => {
+it('variable template without special word at the end', () => {
     const input = `.foo {
         border: 2px solid #000;
         color: #020202;
@@ -77,13 +76,13 @@ test('variable template without special word at the end', (t) => {
         color: var(--light-black-new-1);
         background-color: var(--light-black-new-2);
     }`;
-    return run(t, input, output, {
+    return run(input, output, {
         onlyColor: true,
         templateVariableName: '[tint][colorKeyword]new',
     });
 });
 
-test('template with propertyName', (t) => {
+it('template with propertyName', () => {
     const input = `.foo {
         border: 1px solid #000;
         background-color: red;
@@ -94,12 +93,12 @@ test('template with propertyName', (t) => {
         border: var(--theme-border-1);
         background-color: var(--theme-background-color-1);
     }`;
-    return run(t, input, output, {
+    return run(input, output, {
         templateVariableName: 'theme[propertyName]',
     });
 });
 
-test('variable template with selector', (t) => {
+it('variable template with selector', () => {
     const input = `.foo {
         border: 2px solid #000;
         color: red;
@@ -110,10 +109,10 @@ test('variable template with selector', (t) => {
         border: 2px solid var(--theme-foo-1);
         color: var(--theme-foo-2);
     }`;
-    return run(t, input, output, { onlyColor: true, templateVariableName: 'theme[selectorName]' });
+    return run(input, output, { onlyColor: true, templateVariableName: 'theme[selectorName]' });
 });
 
-test('variable template with tint and selector', (t) => {
+it('variable template with tint and selector', () => {
     const input = `.foo.bar {
         border: 2px solid #000;
         color: #020202;
@@ -127,7 +126,7 @@ test('variable template with tint and selector', (t) => {
         color: var(--foo-bar-black-light-1);
         background-color: var(--foo-bar-black-light-2);
     }`;
-    return run(t, input, output, {
+    return run(input, output, {
         onlyColor: true,
         templateVariableName: '[selectorName][colorKeyword][tint]',
     });

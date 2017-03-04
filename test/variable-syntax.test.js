@@ -1,7 +1,6 @@
-import test from 'ava';
-import run from './_run';
+const run = require('./_run');
 
-test('sass variable syntax', (t) => {
+it('sass variable syntax', () => {
     const input = `.foo {
         border: 1px solid #000;
         background-color: red;
@@ -10,13 +9,13 @@ test('sass variable syntax', (t) => {
         border: $theme-border-1;
         background-color: $theme-background-color-1;
     }`;
-    return run(t, input, output, {
+    return run(input, output, {
         templateVariableName: 'theme[propertyName]',
         variableSyntax: 'sass',
     });
 });
 
-test('less variable syntax', (t) => {
+it('less variable syntax', () => {
     const input = `.foo {
         border: 1px solid #000;
         background-color: red;
@@ -34,13 +33,13 @@ test('less variable syntax', (t) => {
     .bar {
         border: @theme-border-2;
     }`;
-    return run(t, input, output, {
+    return run(input, output, {
         templateVariableName: 'theme[propertyName]',
         variableSyntax: 'less',
     });
 });
 
-test('variable template with tint and sass syntax', (t) => {
+it('variable template with tint and sass syntax', () => {
     const input = `.foo {
         border: 2px solid #000;
         color: #020202;
@@ -51,7 +50,7 @@ test('variable template with tint and sass syntax', (t) => {
         color: $black-light-1;
         background-color: $black-light-2;
     }`;
-    return run(t, input, output, {
+    return run(input, output, {
         onlyColor: true,
         templateVariableName: '[colorKeyword][tint]',
         variableSyntax: 'sass',

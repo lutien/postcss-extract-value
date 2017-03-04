@@ -1,7 +1,6 @@
-import test from 'ava';
-import run from './_run';
+const run = require('./_run');
 
-test('HSL', (t) => {
+it('HSL', () => {
     const input = `.foo {
         border: 1px solid hsl(120, 100%, 50%);
     }`;
@@ -9,10 +8,10 @@ test('HSL', (t) => {
         --border-1: hsl(120, 100%, 50%);\n}\n.foo {
         border: 1px solid var(--border-1);
     }`;
-    return run(t, input, output, { onlyColor: true });
+    return run(input, output, { onlyColor: true });
 });
 
-test('HSLA', (t) => {
+it('HSLA', () => {
     const input = `.foo {
         border: 1px solid hsla(120, 100%, 50%, 0.5);
     }`;
@@ -20,10 +19,10 @@ test('HSLA', (t) => {
         --border-1: hsla(120, 100%, 50%, 0.5);\n}\n.foo {
         border: 1px solid var(--border-1);
     }`;
-    return run(t, input, output, { onlyColor: true });
+    return run(input, output, { onlyColor: true });
 });
 
-test('color keyword', (t) => {
+it('color keyword', () => {
     const input = `.foo {
         border: 1px solid black;
     }`;
@@ -31,10 +30,10 @@ test('color keyword', (t) => {
         --border-1: black;\n}\n.foo {
         border: 1px solid var(--border-1);
     }`;
-    return run(t, input, output, { onlyColor: true });
+    return run(input, output, { onlyColor: true });
 });
 
-test('RGB', (t) => {
+it('RGB', () => {
     const input = `.foo {
         border: 1px solid rgb(120, 100, 50);
     }`;
@@ -42,10 +41,10 @@ test('RGB', (t) => {
         --border-1: rgb(120, 100, 50);\n}\n.foo {
         border: 1px solid var(--border-1);
     }`;
-    return run(t, input, output, { onlyColor: true });
+    return run(input, output, { onlyColor: true });
 });
 
-test('RGBA', (t) => {
+it('RGBA', () => {
     const input = `.foo {
         border: 1px solid rgba(120, 100, 50, 0.4);
     }`;
@@ -53,10 +52,10 @@ test('RGBA', (t) => {
         --border-1: rgba(120, 100, 50, 0.4);\n}\n.foo {
         border: 1px solid var(--border-1);
     }`;
-    return run(t, input, output, { onlyColor: true });
+    return run(input, output, { onlyColor: true });
 });
 
-test('short hex', (t) => {
+it('short hex', () => {
     const input = `.foo {
         border: 1px solid #000;
     }`;
@@ -64,10 +63,10 @@ test('short hex', (t) => {
         --border-1: #000;\n}\n.foo {
         border: 1px solid var(--border-1);
     }`;
-    return run(t, input, output, { onlyColor: true });
+    return run(input, output, { onlyColor: true });
 });
 
-test('long hex', (t) => {
+it('long hex', () => {
     const input = `.foo {
         border: 1px solid #101113;
     }`;
@@ -75,5 +74,5 @@ test('long hex', (t) => {
         --border-1: #101113;\n}\n.foo {
         border: 1px solid var(--border-1);
     }`;
-    return run(t, input, output, { onlyColor: true });
+    return run(input, output, { onlyColor: true });
 });
