@@ -1,6 +1,6 @@
 {
   "name": "postcss-extract-value",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "PostCSS plugin to extract values from css properties and put them into variables.",
   "keywords": [
     "postcss",

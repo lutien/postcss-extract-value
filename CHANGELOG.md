@@ -1,3 +1,13 @@
+## v0.5.1
+
+* Replace AVA to Jest
+* Add support PostCSS 6.0
+
+## v0.5.0
+
+* Refactoring variable templating
+* Add support keyword [selectorName] for template
+
 ## v0.4.0
 
 * Add support less and sass syntax for variables
